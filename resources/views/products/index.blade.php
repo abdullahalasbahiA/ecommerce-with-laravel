@@ -27,58 +27,16 @@
 
             <!-- Filter Sections -->
             <div class="space-y-6">
-                <!-- Price Range Filter -->
-                <div>
-                    <h3 class="font-semibold mb-3">Price Range</h3>
-                    <div class="space-y-2">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="price1" class="rounded text-blue-600">
-                            <label for="price1" class="ml-2 text-gray-700">$0 - $50</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="price2" class="rounded text-blue-600">
-                            <label for="price2" class="ml-2 text-gray-700">$50 - $100</label>
-                        </div>
-                        <!-- Add more price ranges as needed -->
-                    </div>
-                </div>
+                {{-- Brand Filter --}}
 
-                <!-- Categories Filter -->
-                <div>
-                    <h3 class="font-semibold mb-3">Categories</h3>
-                    <div class="space-y-2">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="cat1" class="rounded text-blue-600">
-                            <label for="cat1" class="ml-2 text-gray-700">Electronics</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input type="checkbox" id="cat2" class="rounded text-blue-600">
-                            <label for="cat2" class="ml-2 text-gray-700">Clothing</label>
-                        </div>
-                        <!-- Add more categories as needed -->
-                    </div>
-                </div>
+                {{-- Price Filter --}}
+                {{-- Connectivity Filter --}}
+                {{-- Wearing Style Filter --}}
 
-                <!-- Rating Filter -->
-                <div>
-                    <h3 class="font-semibold mb-3">Rating</h3>
-                    <div class="space-y-2">
-                        <div class="flex items-center">
-                            <input type="checkbox" id="rating5" class="rounded text-blue-600">
-                            <label for="rating5" class="ml-2 flex items-center">
-                                <div class="flex text-yellow-400">
-                                    <!-- 5 stars -->
-                                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                        <path
-                                            d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    <!-- Repeat 4 more times -->
-                                </div>
-                            </label>
-                        </div>
-                        <!-- Add more rating options as needed -->
-                    </div>
-                </div>
+
+
+                <x-search-filters />
+
 
                 <button class="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition">
                     Apply Filters
@@ -87,7 +45,10 @@
         </div>
     </x-slot>
 
-    @foreach ($products as $product)
+    {{-- @foreach ($products as $product)
         <x-product-card :product="$product" />
-    @endforeach
+    @endforeach --}}
+    <h2>Results:</h2>
+    <ul id="results" style="display: flex; flex-wrap:wrap"></ul>
+    <div id="pagination" class="mt-4 flex gap-2"></div>
 </x-my-layout>

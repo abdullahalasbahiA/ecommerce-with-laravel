@@ -1,3 +1,4 @@
+{{-- @dd($brands->pluck('name', 'id')) --}}
 <x-my-layout>
     <div style="width: 1000px; margin:20px 0 60px">
         <div width="700px" style="width: 100%" class="max-w-6xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
@@ -43,23 +44,87 @@
                     @enderror
                 </div>
 
-                <!-- Category Field -->
                 <div class="mb-6">
-                    <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                    <select id="category" name="category"
+                    <label for="quantity" class="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+                    <input class="w-full" type="number" id="quantity" name="stock_quantity" step="0.01" min="0"
+                        value="{{ old('quantity') }}"
                         class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                         required>
-                        <option value="">Select a category</option>
-                        <option value="electronics" {{ old('category') == 'electronics' ? 'selected' : '' }}>Electronics
-                        </option>
-                        <option value="clothing" {{ old('category') == 'clothing' ? 'selected' : '' }}>Clothing</option>
-                        <option value="home" {{ old('category') == 'home' ? 'selected' : '' }}>Home</option>
-                        <option value="other" {{ old('category') == 'other' ? 'selected' : '' }}>Other</option>
-                    </select>
-                    @error('category')
+                    @error('quantity')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+
+                <div class="mb-6">
+                    <label for="brand_id" class="block text-sm font-medium text-gray-700 mb-1">Brand</label>
+                    <select id="brand_id" name="brand_id"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        required>
+                        <option value="">Select a Brand</option>
+                        @foreach($brands as $brand)
+                            <option value="{{ $brand->id }}" {{ old('brand_id') == $brand->id ? 'selected' : '' }}>
+                                {{ $brand->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    @error('brand_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <div class="mb-6">
+                    <label for="type" class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                    <select id="type" name="type"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        required>
+                        <option value="">Select a Type</option>
+                        @foreach($types as $type)
+                            <option value="{{ $type->name }}" {{ old('type') == $type ? 'selected' : '' }}>{{ $type->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('type')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+
+                {{-- FEATUREs --}}
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Features</label>
+                    <div class="flex flex-wrap gap-4">
+                        @foreach($features as $feature)
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="features[]" value="{{ $feature }}"
+                                    {{ is_array(old('features')) && in_array($feature, old('features')) ? 'checked' : '' }}
+                                    class="text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">{{ $feature->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('features')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                
+
+                {{-- COLOR --}}
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Available Colors</label>
+                    <div class="flex flex-wrap gap-4">
+                        @foreach($colors as $color)
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="colors[]" value="{{ $color }}"
+                                    {{ is_array(old('colors')) && in_array($color, old('colors')) ? 'checked' : '' }}
+                                    class="text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <span class="ml-2 text-gray-700">{{ $color->name }}</span>
+                            </label>
+                        @endforeach
+                    </div>
+                    @error('colors')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                
 
                 <!-- Image Upload -->
                 <div class="mb-6">
@@ -88,7 +153,7 @@
                             <input class="w-full hidden" id="image" name="image" type="file" class="sr-only">
                         </label>
                     </div>
-                    <p class="mt-1 text-sm text-gray-500">PNG, JPG, JPEG up to 5MB</p>
+                    <p class="mt-1 text-sm text-gray-500">PNG, JPG, JPEG, WEBP up to 5MB</p>
                     @error('image')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -96,7 +161,7 @@
 
                 <!-- Form Actions -->
                 <div class="flex justify-end space-x-3">
-                    <a href="{{ route('products.index') }}"
+                    <a href=""
                         class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Cancel
                     </a>

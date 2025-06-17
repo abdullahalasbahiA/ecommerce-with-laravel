@@ -1,9 +1,12 @@
 @props(['product'])
+{{
+    $product = json_decode($product)
+}}
 <div style=" width:270px"class="m-2 bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
     <!-- Product Image -->
     <div class="relative pb-[78%] overflow-hidden">
         <img 
-            src="{{ asset('storage/' . $product->image_path) }}"
+            src="{{ asset('storage/' . $product->image_url) }}"
             alt="{{ $product->name }}"
             class="absolute h-full w-full object-cover hover:scale-105 transition-transform duration-300"
             loading="lazy"
@@ -46,7 +49,7 @@
             <span class="text-lg font-bold text-gray-900">${{ $product->price }}</span>
             
             <!-- Add to Cart Button -->
-            <button class="add-to-cart-btn px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-colors duration-300">
+            <button class="add-to-cart" data-product-id="{{ $product->id }}">
                 Add to Cart
             </button>
             <a href="{{ route('products.edit', $product->id) }}" 

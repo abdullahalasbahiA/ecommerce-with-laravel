@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Brand;
+use App\Models\Color;
+use App\Models\Feature;
 use App\Models\Product;
+use App\Models\ProductType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+
     public function index()
     {
         return view('products.index', [
@@ -22,7 +27,12 @@ class ProductController extends Controller
 
     public function create()
     {
-        return view('products.create');
+        return view('products.create', [
+            'brands' => Brand::all(),
+            'types' => ProductType::all(),
+            'features' => Feature::all(),
+            'colors' => Color::all()
+        ]);
     }
 
     public function store(Request $request)
@@ -32,8 +42,9 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'category' => 'required|string|in:electronics,clothing,home,other',
-            'image' => 'required|image|mimes:jpeg,png,jpg|max:5120', // 5MB max
+            'stock_quantity' => 'nullable|integer|min:0',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max
+            'brand_id' => 'required|exists:brands,id',
         ]);
 
         // Handle the image upload
@@ -48,25 +59,13 @@ class ProductController extends Controller
             'name' => $validated['name'],
             'description' => $validated['description'],
             'price' => $validated['price'],
-            'category' => $validated['category'],
-            'image_path' => $imagePath,
+            'stock_quantity' => $validated['stock_quantity'] ?? 0,
+            'image_url' => $imagePath,
         ]);
 
         // Redirect with success message
         return redirect()->route('products.index', $product->id)
             ->with('success', 'Product created successfully');
-    }
-
-    public function destroy(Product $product)
-    {
-        // Delete the image from storage
-        if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
-            Storage::disk('public')->delete($product->image_path);
-        }
-
-        // Delete the product from database
-        $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully');
     }
 
     public function edit(Product $product)
@@ -80,26 +79,24 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'category' => 'required|string|in:electronics,clothing,home,other',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:5120',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
         ]);
 
         $updateData = [
             'name' => $validated['name'],
             'description' => $validated['description'],
             'price' => $validated['price'],
-            'category' => $validated['category'],
         ];
 
         // Handle new image upload
         if ($request->hasFile('image')) {
             // Delete old image if exists
-            if ($product->image_path && Storage::disk('public')->exists($product->image_path)) {
-                Storage::disk('public')->delete($product->image_path);
+            if ($product->image_url && Storage::disk('public')->exists($product->image_url)) {
+                Storage::disk('public')->delete($product->image_url);
             }
 
             // Store new image
-            $updateData['image_path'] = $request->file('image')->store('products', 'public');
+            $updateData['image_url'] = $request->file('image')->store('products', 'public');
         }
 
         $product->update($updateData);
@@ -107,4 +104,68 @@ class ProductController extends Controller
         return redirect()->route('products.show', $product->id)
             ->with('success', 'Product updated successfully');
     }
+
+    public function destroy(Product $product)
+    {
+        // Delete the image from storage
+        if ($product->image_url && Storage::disk('public')->exists($product->image_url)) {
+            Storage::disk('public')->delete($product->image_url);
+        }
+
+        // Delete the product from database
+        $product->delete();
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully');
+    }
+
+    public function search(Request $request)
+    {
+        $query = Product::query();
+
+        if ($request->filled('features')) {
+            $query->whereHas('features', function ($q) use ($request) {
+                $q->whereIn('features.id', $request->features);
+            }, '>=', count($request->features));
+        }
+
+        if ($request->filled('categories')) {
+            $query->whereHas('categories', function ($q) use ($request) {
+                $q->whereIn('categories.id', $request->categories);
+            });
+        }
+
+        if ($request->filled('price_min')) {
+            $query->where('price', '>=', $request->price_min);
+        }
+
+        if ($request->filled('price_max')) {
+            $query->where('price', '<=', $request->price_max);
+        }
+
+        if ($request->filled('make')) {
+            $query->where('make', $request->make);
+        }
+
+        if ($request->filled('year')) {
+            $query->where('year', $request->year);
+        }
+
+        if ($request->filled('fuel_type')) {
+            $query->where('fuel_type', $request->fuel_type);
+        }
+
+        // $products = $query->get();
+        // return response()->json($products);
+        $products = $query->paginate(10); // Use normal paginate()
+
+        return response()->json([
+            'data' => $products->items(),
+            'current_page' => $products->currentPage(),
+            'last_page' => $products->lastPage(),
+            'per_page' => $products->perPage(),
+            'total' => $products->total(),
+        ]);
+    }
+
+
+
 }

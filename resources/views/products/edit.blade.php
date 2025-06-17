@@ -44,7 +44,7 @@
                     @enderror
                 </div>
 
-                <!-- Category Field -->
+                {{-- <!-- Category Field -->
                 <div class="mb-6">
                     <label for="category" class="block text-sm font-medium text-gray-700 mb-1">Category</label>
                     <select id="category" name="category"
@@ -64,14 +64,14 @@
                     @error('category')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
-                </div>
+                </div> --}}
 
                 <!-- Image Upload -->
                 <div class="mb-6">
                     <label for="image" class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
                     <div class="mt-1 flex items-center">
-                        @if ($product->image_path)
-                            <img src="{{ asset('storage/' . $product->image_path) }}" alt="Current product image"
+                        @if ($product->image_url)
+                            <img src="{{ asset('storage/' . $product->image_url) }}" alt="Current product image"
                                 class="h-16 w-16 object-cover rounded">
                         @else
                             <span class="inline-block h-16 w-16 rounded-full overflow-hidden bg-gray-100">
@@ -96,7 +96,7 @@
 
                 <!-- Form Actions -->
                 <div class="flex justify-end space-x-3">
-                    <a href="{{ route('products.index') }}"
+                    <a href=""
                         class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                         Cancel
                     </a>
