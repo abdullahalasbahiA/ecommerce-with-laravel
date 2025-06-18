@@ -2,15 +2,9 @@ async function searchCars(page = 1) {
     const formParams = new URLSearchParams();
     const priceMin = document.getElementById("price_min").value;
     const priceMax = document.getElementById("price_max").value;
-    const make = document.getElementById("make").value;
-    const year = document.getElementById("year").value;
-    const fuelType = document.getElementById("fuel_type").value;
 
     if (priceMin) formParams.append("price_min", priceMin);
     if (priceMax) formParams.append("price_max", priceMax);
-    if (make) formParams.append("make", make);
-    if (year) formParams.append("year", year);
-    if (fuelType) formParams.append("fuel_type", fuelType);
 
     if (!isNaN(page) && typeof page === "number") { // if page var is a number
         formParams.append("page", page); // add the page number
@@ -165,15 +159,7 @@ function fillFormFromUrl() {
     if (params.has("price_max")) {
         document.getElementById("price_max").value = params.get("price_max");
     }
-    if (params.has("make")) {
-        document.getElementById("make").value = params.get("make");
-    }
-    if (params.has("year")) {
-        document.getElementById("year").value = params.get("year");
-    }
-    if (params.has("fuel_type")) {
-        document.getElementById("fuel_type").value = params.get("fuel_type");
-    }
+    
 
     return params.has("page") ? parseInt(params.get("page")) : 1;
 }
@@ -182,9 +168,6 @@ function clearFilters() {
     // Reset all form inputs
     document.getElementById("price_min").value = "";
     document.getElementById("price_max").value = "";
-    document.getElementById("make").value = "";
-    document.getElementById("year").value = "";
-    document.getElementById("fuel_type").value = "";
 
     // Clear URL parameters
     window.history.pushState({}, "", "/productsSearch");

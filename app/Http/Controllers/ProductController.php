@@ -141,17 +141,7 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->price_max);
         }
 
-        if ($request->filled('make')) {
-            $query->where('make', $request->make);
-        }
 
-        if ($request->filled('year')) {
-            $query->where('year', $request->year);
-        }
-
-        if ($request->filled('fuel_type')) {
-            $query->where('fuel_type', $request->fuel_type);
-        }
 
         // $products = $query->get();
         // return response()->json($products);
