@@ -16,7 +16,8 @@ class ProductController extends Controller
     public function index()
     {
         return view('products.index', [
-            'products' => Product::all()
+            'products' => Product::all(),
+            'features' => Feature::all(),
         ]);
     }
 
@@ -35,42 +36,38 @@ class ProductController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-        // Validate the request
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'stock_quantity' => 'nullable|integer|min:0',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120', // 5MB max
-            'brand_id' => 'required|exists:brands,id',
-        ]);
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'description' => 'required|string',
+        'price' => 'required|numeric|min:0',
+        'stock_quantity' => 'nullable|integer|min:0',
+        'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+        'brand_id' => 'required|exists:brands,id',
+        'features' => 'nullable|array',
+        'features.*' => 'exists:features,id'
+    ]);
 
-        // Handle the image upload
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
-        } else {
-            return back()->with('error', 'Image upload failed');
-        }
+    // Handle image upload
+    $imagePath = $request->file('image')->store('products', 'public');
+    
+    // Create product (ensure features is in $fillable)
+    $product = Product::create($validated);
 
-        // Create the product
-        $product = Product::create([
-            'name' => $validated['name'],
-            'description' => $validated['description'],
-            'price' => $validated['price'],
-            'stock_quantity' => $validated['stock_quantity'] ?? 0,
-            'image_url' => $imagePath,
-        ]);
-
-        // Redirect with success message
-        return redirect()->route('products.index', $product->id)
-            ->with('success', 'Product created successfully');
+    // Attach features if they exist
+    if ($request->has('features')) {
+        $product->features()->sync($request->features);
     }
+
+    return redirect()->route('products.index')
+        ->with('success', 'Product created successfully');
+}
 
     public function edit(Product $product)
     {
-        return view('products.edit', compact('product'));
+        $features = Feature::all();
+        return view('products.edit', compact('product', 'features'));
     }
 
     public function update(Request $request, Product $product)
@@ -119,18 +116,12 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $query = Product::query();
+        $query = Product::latest()->with(['features']);
 
         if ($request->filled('features')) {
             $query->whereHas('features', function ($q) use ($request) {
                 $q->whereIn('features.id', $request->features);
             }, '>=', count($request->features));
-        }
-
-        if ($request->filled('categories')) {
-            $query->whereHas('categories', function ($q) use ($request) {
-                $q->whereIn('categories.id', $request->categories);
-            });
         }
 
         if ($request->filled('price_min')) {
@@ -155,7 +146,4 @@ class ProductController extends Controller
             'total' => $products->total(),
         ]);
     }
-
-
-
 }

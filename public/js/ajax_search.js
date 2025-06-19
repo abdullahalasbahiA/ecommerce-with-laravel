@@ -3,10 +3,17 @@ async function searchCars(page = 1) {
     const priceMin = document.getElementById("price_min").value;
     const priceMax = document.getElementById("price_max").value;
 
+    const features = Array.from(
+        document.querySelectorAll('input[name="features[]"]:checked')
+    ).map((cb) => cb.value);
+    if (features.length)
+        features.forEach((f) => formParams.append("features[]", f));
+
     if (priceMin) formParams.append("price_min", priceMin);
     if (priceMax) formParams.append("price_max", priceMax);
 
-    if (!isNaN(page) && typeof page === "number") { // if page var is a number
+    if (!isNaN(page) && typeof page === "number") {
+        // if page var is a number
         formParams.append("page", page); // add the page number
     }
 
@@ -65,6 +72,10 @@ async function searchCars(page = 1) {
                     </div>
                     <span class="text-xs text-gray-500 ml-1">(24)</span>
                 </div>
+
+                <span class="badge bg-secondary">${product.features.map(
+                    (f) => f.name
+                )}</span>
                 
                 <!-- Price -->
                 <div class="flex items-center justify-between mt-3">
@@ -73,8 +84,10 @@ async function searchCars(page = 1) {
                     }</span>
                     
                     <!-- Add to Cart Button -->
-                    <button class="add-to-cart" data-product-id="${product.id}">
-                        Add to Cart
+                    <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" data-product-id="${
+                        product.id
+                    }">
+                        Add
                     </button>
                     <a href="/products/${product.id}/edit" 
                         class="text-purple-600 hover:text-purple-900 mr-3">
@@ -159,7 +172,6 @@ function fillFormFromUrl() {
     if (params.has("price_max")) {
         document.getElementById("price_max").value = params.get("price_max");
     }
-    
 
     return params.has("page") ? parseInt(params.get("page")) : 1;
 }
@@ -183,4 +195,13 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     // when the document load give me all items
     searchCars(new Event("submit"));
+});
+document.addEventListener("DOMContentLoaded", function () {
+    // For feature checkboxes
+    document
+        .querySelectorAll('input[name="features[]"]')
+        .forEach((checkbox) => {
+            checkbox.addEventListener("change", () => searchProducts(1));
+        });
+
 });

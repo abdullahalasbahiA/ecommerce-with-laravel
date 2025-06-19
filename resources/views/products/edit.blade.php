@@ -1,5 +1,5 @@
 <x-my-layout>
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-8" style="width: 1000px; margin:20px 0 60px">
         <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-md overflow-hidden">
             <div class="bg-gray-50 px-6 py-4 border-b">
                 <h1 class="text-2xl font-bold text-gray-800">Edit Product</h1>
@@ -43,6 +43,22 @@
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
                 </div>
+
+
+                <div class="mb-3">
+                    <label class="form-label">Features</label>
+                    @foreach ($features as $feature)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="features[]"
+                                value="{{ $feature->id }}" id="feature_{{ $feature->id }}"
+                                {{ $product->features->contains($feature->id) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="feature_{{ $feature->id }}">
+                                {{ $feature->name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+
 
                 {{-- <!-- Category Field -->
                 <div class="mb-6">

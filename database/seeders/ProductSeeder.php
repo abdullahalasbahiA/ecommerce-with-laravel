@@ -100,7 +100,7 @@ class ProductSeeder extends Seeder
             ]
             // Add more products...
         ];
-
+        
         foreach ($products as $product) {
             Product::create($product);
         }
