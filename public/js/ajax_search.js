@@ -180,6 +180,9 @@ function clearFilters() {
     // Reset all form inputs
     document.getElementById("price_min").value = "";
     document.getElementById("price_max").value = "";
+    document.querySelectorAll('input[name="features[]"]').forEach((checkbox) => {
+        checkbox.checked = false;
+    });
 
     // Clear URL parameters
     window.history.pushState({}, "", "/productsSearch");
@@ -203,5 +206,4 @@ document.addEventListener("DOMContentLoaded", function () {
         .forEach((checkbox) => {
             checkbox.addEventListener("change", () => searchProducts(1));
         });
-
 });

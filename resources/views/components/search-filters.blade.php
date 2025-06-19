@@ -15,6 +15,7 @@
 
 
 
-    <button type="submit">Search</button>
-    <button type="button" onclick="clearFilters()">Clear</button>
+    <button class="w-full mb-1 mt-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition" 
+    type="submit">Search</button>
+    <button class="w-full bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 transition" type="button" onclick="clearFilters()">Clear</button>
 </form>

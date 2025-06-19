@@ -36,33 +36,41 @@ class ProductController extends Controller
         ]);
     }
 
-public function store(Request $request)
-{
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'description' => 'required|string',
-        'price' => 'required|numeric|min:0',
-        'stock_quantity' => 'nullable|integer|min:0',
-        'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
-        'brand_id' => 'required|exists:brands,id',
-        'features' => 'nullable|array',
-        'features.*' => 'exists:features,id'
-    ]);
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'stock_quantity' => 'required|integer|min:0',
+            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'brand_id' => 'required|exists:brands,id',
+            'features' => 'nullable|array',
+            'features.*' => 'exists:features,id'
+        ]);
 
-    // Handle image upload
-    $imagePath = $request->file('image')->store('products', 'public');
-    
-    // Create product (ensure features is in $fillable)
-    $product = Product::create($validated);
+        // Handle image upload
+        $imagePath = $request->file('image')->store('products', 'public');
 
-    // Attach features if they exist
-    if ($request->has('features')) {
-        $product->features()->sync($request->features);
+        // Create product (ensure features is in $fillable)
+        // Create the product
+        $product = Product::create([
+            'name' => $validated['name'],
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'stock_quantity' => $validated['stock_quantity'] ?? 0,
+            'image_url' => $imagePath,
+
+        ]);
+
+        // Attach features if they exist
+        if ($request->has('features')) {
+            $product->features()->sync($request->features);
+        }
+
+        return redirect()->route('products.index')
+            ->with('success', 'Product created successfully');
     }
-
-    return redirect()->route('products.index')
-        ->with('success', 'Product created successfully');
-}
 
     public function edit(Product $product)
     {
@@ -77,6 +85,8 @@ public function store(Request $request)
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'features' => 'nullable|array',
+            'features.*' => 'exists:features,id'
         ]);
 
         $updateData = [
@@ -84,6 +94,8 @@ public function store(Request $request)
             'description' => $validated['description'],
             'price' => $validated['price'],
         ];
+
+        $product->features()->sync($validated['features'] ?? []);
 
         // Handle new image upload
         if ($request->hasFile('image')) {
