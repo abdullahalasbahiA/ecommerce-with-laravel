@@ -19,12 +19,12 @@ Route::delete('/products/{product}', [ProductController::class, 'destroy'])->nam
 Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 
-Route::get('/', [ProductController::class, 'index'])->name('products.index');
-Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
-
+Route::prefix('cart')->group(function() {
+    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
+    Route::post('/update', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+});
 
 // Route::get('/', [ProductController::class, 'index']);
 // Route::get('/products', [ProductController::class, 'index']); // 📄 For the UI page

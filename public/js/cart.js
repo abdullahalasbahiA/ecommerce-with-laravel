@@ -54,6 +54,7 @@ class Cart {
 
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Adding event listeners for add-to-cart buttons');
     document.querySelectorAll('.add-to-cart').forEach(btn => {
         btn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -68,6 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // Add to cart.js
 document.addEventListener('DOMContentLoaded', () => {
     // Quantity updates
+    console.log('Adding event listeners for quantity inputs');
     document.querySelectorAll('.quantity-input').forEach(input => {
         input.addEventListener('change', async (e) => {
             const response = await Cart.update(

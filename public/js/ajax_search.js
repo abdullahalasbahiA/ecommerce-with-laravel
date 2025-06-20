@@ -84,11 +84,12 @@ async function searchCars(page = 1) {
                     }</span>
                     
                     <!-- Add to Cart Button -->
-                    <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded" data-product-id="${
-                        product.id
-                    }">
+                    <button class="add-to-cart bg-blue-500 
+                    hover:bg-blue-600 text-white px-4 
+                    py-2 rounded" data-product-id="${product.id}">
                         Add
                     </button>
+                    
                     <a href="/products/${product.id}/edit" 
                         class="text-purple-600 hover:text-purple-900 mr-3">
                         Edit
