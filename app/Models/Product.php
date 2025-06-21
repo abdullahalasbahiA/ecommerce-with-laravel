@@ -13,6 +13,7 @@ class Product extends Model
     //     'name', 'description', 'price', 'stock_quantity', 'image_url'
     // ];
 
+    protected $fillable = ['name', 'description', 'price', 'image'];
     protected $guarded = [];
 
     public function brands()

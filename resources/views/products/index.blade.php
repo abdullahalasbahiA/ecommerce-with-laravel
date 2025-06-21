@@ -37,10 +37,10 @@
 
                 <x-search-filters :features="$features" />
 
-
-               
             </div>
         </div>
+
+
     </x-slot>
 
     {{-- @foreach ($products as $product)
@@ -48,5 +48,7 @@
     @endforeach --}}
     <h2>Results:</h2>
     <ul id="results" style="display: flex; flex-wrap:wrap"></ul>
+
     <div id="pagination" class="mt-4 flex gap-2"></div>
+
 </x-my-layout>

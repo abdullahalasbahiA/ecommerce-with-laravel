@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,19 +8,15 @@
     <meta name="keywords" content="Laravel, e-commerce, shopping cart, products">
     <meta name="author" content="Abdullah Alasbahi">
 
-
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     {{-- <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" /> --}}
-    <script src="{{ asset('js/ajax_search.js') }}" defer></script>
-    <script src="{{ asset('js/cart.js') }}" defer></script>
+
 
     {{-- <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> --}}
     {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css">     --}}
-
-
 
     <style>
         /* Custom styling for the add to cart button animation */
@@ -126,7 +121,6 @@
                             style="top: 20px; right: 20px; z-index: 100;">
                             Cart (<span id="cart-count">0</span>)
                         </button>
-
                     </div>
                     <!-- Mobile menu button -->
                     <div class="md:hidden flex items-center">
@@ -234,12 +228,8 @@
         </div>
     </div>
 
-
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
+        <script src="{{ asset('js/ajax_search.js') }}" defer></script>
+    <script src="{{ asset('js/cart.js') }}" defer></script>
 </body>
 
 </html>

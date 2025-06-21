@@ -65,19 +65,6 @@
                 </button>
             </form>
         </div>
-        <script>
-            // Event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Adding event listeners for add-to-cart buttons');
-    document.querySelectorAll('.add-to-cart').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            e.preventDefault();
-            const productId = btn.dataset.productId;
-            const response = await Cart.add(productId);
-            Cart.updateUI(response);
-        });
-    });
-});
-        </script>
+
     </div>
 </div>

@@ -4,6 +4,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [ProductController::class, 'index']);
@@ -19,11 +20,19 @@ Route::delete('/products/{product}', [ProductController::class, 'destroy'])->nam
 Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 
-Route::prefix('cart')->group(function() {
-    Route::post('/add', [CartController::class, 'add'])->name('cart.add');
-    Route::post('/update', [CartController::class, 'update'])->name('cart.update');
-    Route::post('/remove', [CartController::class, 'remove'])->name('cart.remove');
-    Route::get('/', [CartController::class, 'index'])->name('cart.index');
+
+// Impletementing Cart functionalites
+// Route::get('/', [ProductController::class, 'index'])->name('products.index');
+// Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::post('/store-cart', [CartController::class, 'store'])->name('cart.store');
+Route::get('/fetch-cart', [CartController::class, 'jsonIndex'])->name('cart.index');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+
+Route::get('/something', function(){
+    $products = Product::all();
+    return view('products.something', compact('products'));
 });
 
 // Route::get('/', [ProductController::class, 'index']);

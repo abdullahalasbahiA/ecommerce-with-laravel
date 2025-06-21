@@ -84,8 +84,7 @@ async function searchCars(page = 1) {
                     }</span>
                     
                     <!-- Add to Cart Button -->
-                    <button class="add-to-cart bg-blue-500 
-                    hover:bg-blue-600 text-white px-4 
+                    <button class="add-to-cart bg-blue-500 hover:bg-blue-600 text-white px-4 
                     py-2 rounded" data-product-id="${product.id}">
                         Add
                     </button>
