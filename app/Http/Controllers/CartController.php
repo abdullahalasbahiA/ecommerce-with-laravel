@@ -13,14 +13,14 @@ class CartController extends Controller
     public function jsonIndex()
     {
         $cart = session()->get('cart', []);
-        
+
         if (empty($cart)) {
             return response()->json([
                 'empty' => true,
                 'message' => 'Your cart is empty'
             ]);
         }
-        
+
         return response()->json($cart);
     }
 
@@ -39,103 +39,73 @@ class CartController extends Controller
         return view('cart.index');
     }
 
-public function store(Request $request)
-{
-    try {
-        // Validate the request
-        $validated = $request->validate([
-            'product_id' => 'required|integer|exists:products,id'
-        ]);
-
-        // Get the product
-        $product = Product::find($request->product_id);
-        
-        if (!$product) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Product not found'
-            ], 404);
-        }
-
-        // Get current cart
-        $cart = session()->get('cart', []);
-        
-        // Update cart
-        if (isset($cart[$product->id])) {
-            $cart[$product->id]['quantity']++;
-        } else {
-            $cart[$product->id] = [
-                "name" => $product->name,
-                "quantity" => 1,
-                "price" => $product->price,
-                "image_url" => $product->image_url, // Changed to match your frontend
-                "product_id" => $product->id // Added for reference
-            ];
-        }
-        
-        // Save to session
-        session()->put('cart', $cart);
-        
-        return response()->json([
-            'success' => true,
-            'cart_count' => count($cart),
-            'message' => 'Product added to cart successfully!',
-            'cart' => $cart // Optional - you might want to omit this for security
-        ]);
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Error adding to cart: ' . $e->getMessage()
-        ], 500);
-    }
-}
-
-/*
     public function store(Request $request)
     {
-        $product = Product::findOrFail($request->product_id);
-        
-        $cart = session()->get('cart', []);
-        
-        if(isset($cart[$product->id])) {
-            $cart[$product->id]['quantity']++;
-        } else {
-            $cart[$product->id] = [
-                "name" => $product->name,
-                "quantity" => 1,
-                "price" => $product->price,
-                "image" => $product->image_url
-            ];
+        try {
+            // Validate the request
+            $validated = $request->validate([
+                'product_id' => 'required|integer|exists:products,id'
+            ]);
+
+            // Get the product
+            $product = Product::find($request->product_id);
+
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product not found'
+                ], 404);
+            }
+
+            // Get current cart
+            $cart = session()->get('cart', []);
+
+            // Update cart
+            if (isset($cart[$product->id])) {
+                $cart[$product->id]['quantity']++;
+            } else {
+                $cart[$product->id] = [
+                    "name" => $product->name,
+                    "quantity" => 1,
+                    "price" => $product->price,
+                    "image_url" => $product->image_url, // Changed to match your frontend
+                    "product_id" => $product->id // Added for reference
+                ];
+            }
+
+            // Save to session
+            session()->put('cart', $cart);
+
+            return response()->json([
+                'success' => true,
+                'cart_count' => count($cart),
+                'message' => 'Product added to cart successfully!',
+                'cart' => $cart // Optional - you might want to omit this for security
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error adding to cart: ' . $e->getMessage()
+            ], 500);
         }
-        
-        session()->put('cart', $cart);
-        
-        return response()->json([
-            'success' => true,
-            'cart' => $cart,
-            'message' => 'Product added to cart successfully!'
-        ]);
     }
-    */
 
 
-
-    public function update(Request $request, $id)
+    public function update(Request $request, $product_id)
     {
         $cart = session()->get('cart');
-        
-        if(isset($cart[$id])) {
-            $cart[$id]['quantity'] = $request->quantity;
+
+        if (isset($cart[$product_id])) {
+            $cart[$product_id]['quantity'] = $request->quantity;
             session()->put('cart', $cart);
-            
+
             return response()->json([
                 'success' => true,
                 'cart' => $cart,
                 'message' => 'Cart updated successfully'
             ]);
         }
-        
+
         return response()->json([
             'success' => false,
             'message' => 'Product not found in cart'
@@ -145,12 +115,12 @@ public function store(Request $request)
     public function destroy($id)
     {
         $cart = session()->get('cart');
-        
-        if(isset($cart[$id])) {
+
+        if (isset($cart[$id])) {
             unset($cart[$id]);
             session()->put('cart', $cart);
         }
-        
+
         return response()->json([
             'success' => true,
             'cart' => $cart,

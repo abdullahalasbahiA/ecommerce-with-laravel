@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -78,8 +79,7 @@
                             <a href="/" class="flex items-center py-4 px-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-600" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184
                                          1.707.707 1.707H17m0 0a2 2 0
                                          100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
@@ -103,24 +103,34 @@
                     </div>
                     <!-- Secondary Navbar items -->
                     <div class="hidden md:flex items-center space-x-3 ">
-                        <a href="/login"
-                            class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-blue-500 hover:text-white transition duration-300">Log
-                            In</a>
-                        <a href="/register"
-                            class="py-2 px-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-400 transition duration-300">Sign
-                            Up</a>
+                        @auth
+                            <span>
+                                welcome, {{ auth()->user()->name }}
+                            </span>
+                            <a href="{{ route('logout') }}"
+                                class="py-2 px-3 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-300"
+                                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                Log Out
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                        @else
+                            <a href="/login"
+                                class="py-2 px-2 font-medium text-gray-500 rounded hover:bg-blue-500 hover:text-white transition duration-300">Log
+                                In</a>
+                            <a href="/register"
+                                class="py-2 px-2 font-medium text-white bg-blue-500 rounded hover:bg-blue-400 transition duration-300">Sign
+                                Up</a>
+                        @endauth
                         <a href="{{ route('cart.index') }}" class="relative">
                             🛒
                             <span
                                 class="cart-count 
                                 absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                                {{ array_sum(Session::get('cart', [])) }}
+                                <span id="cart-count">0</span>
                             </span>
                         </a>
-                        <button id="cart-toggle" class="btn btn-primary position-fixed"
-                            style="top: 20px; right: 20px; z-index: 100;">
-                            Cart (<span id="cart-count">0</span>)
-                        </button>
                     </div>
                     <!-- Mobile menu button -->
                     <div class="md:hidden flex items-center">
@@ -222,13 +232,13 @@
         <div class="flex flex-col md:flex-row">
             {{ $sidebar ?? '' }}
             {{-- add classes to make the product cards flex --}}
-            <div style="max-width:83%; margin:auto; padding-top: 10px; " class="mb-3 flex flex-wrap justify-center">
+            <div style="max-width:83%; margin:auto; padding-top: 10px; " class="mb-3 flex-wrap justify-center">
                 {{ $slot }}
             </div>
         </div>
     </div>
 
-        <script src="{{ asset('js/ajax_search.js') }}" defer></script>
+    <script src="{{ asset('js/ajax_search.js') }}" defer></script>
     <script src="{{ asset('js/cart.js') }}" defer></script>
 </body>
 

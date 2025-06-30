@@ -24,11 +24,11 @@ Route::put('/products/{product}', [ProductController::class, 'update'])->name('p
 // Impletementing Cart functionalites
 // Route::get('/', [ProductController::class, 'index'])->name('products.index');
 // Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
-Route::post('/store-cart', [CartController::class, 'store'])->name('cart.store');
+Route::post('/store-cart/{productId}', [CartController::class, 'store'])->name('cart.store');
 Route::get('/fetch-cart', [CartController::class, 'jsonIndex'])->name('cart.index');
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-Route::put('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
-Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+Route::put('/store-cart/{productId}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/store-cart/{productId}', [CartController::class, 'destroy'])->name('cart.destroy');
 
 Route::get('/something', function(){
     $products = Product::all();
