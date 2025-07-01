@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSearchController;
 use App\Http\Controllers\ProfileController;
@@ -38,6 +39,20 @@ Route::get('/something', function(){
 // Route::get('/', [ProductController::class, 'index']);
 // Route::get('/products', [ProductController::class, 'index']); // 📄 For the UI page
 // Route::get('/api/search', [ProductSearchController::class, 'searchApi'])->name('products.search.api');
+
+
+
+// ==================================================
+// ====================[ PayPal ]====================
+// ==================================================
+// Route::post('/paypal', [PaypalController::class, 'paypal'])->name('paypal');
+Route::post('createpayment', [PaypalController::class, 'createPayment'])->name('createpayment');
+Route::get('success', [PaypalController::class, 'success'])->name('success');
+Route::get('/cancel', [PaypalController::class, 'cancel'])->name('cancel');
+
+
+
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');
