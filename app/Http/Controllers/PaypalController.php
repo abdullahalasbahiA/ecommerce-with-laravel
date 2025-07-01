@@ -104,25 +104,38 @@ class PaypalController extends Controller
     /**
      * Handle successful PayPal payment
      */
-    public function success(Request $request)
-    {
-        $provider = new PayPalClient;
-        $provider->setApiCredentials(config('paypal'));
-        $provider->getAccessToken();
+public function success(Request $request)
+{
+    $provider = new PayPalClient;
+    $provider->setApiCredentials(config('paypal'));
+    $provider->getAccessToken();
+    
+    try {
         $response = $provider->capturePaymentOrder($request->token);
 
-        // Use database transaction to ensure data consistency
+        // Verify we have cart items in session
+        if (!session()->has('cart_items')) {
+            return redirect()->route('cancel')->with('error', 'Session expired - please try your order again');
+        }
+
         return DB::transaction(function () use ($response) {
             if (isset($response['status']) && $response['status'] == 'COMPLETED') {
+                // Get first product name for the payment record (or concatenate all)
+                $firstProduct = session('cart_items')[0]['name'] ?? 'Multiple Products';
+                $totalQuantity = array_sum(array_column(session('cart_items'), 'quantity'));
+
                 // 1. Create the main payment record
                 $payment = Payment::create([
                     'payment_id' => $response['id'],
+                    'product_name' => $firstProduct, // Provide a value for this required field
+                    'quantity' => $totalQuantity, // Provide a value for this required field
                     'amount' => $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'],
                     'currency' => $response['purchase_units'][0]['payments']['captures'][0]['amount']['currency_code'],
-                    'payer_name' => $response['payer']['name']['given_name'] . ' ' . $response['payer']['name']['surname'],
+                    'payer_name' => $response['payer']['name']['given_name'] . ' ' . ($response['payer']['name']['surname'] ?? ''),
                     'payer_email' => $response['payer']['email_address'],
                     'payment_status' => $response['status'],
                     'payment_method' => 'PayPal',
+                    'paid_at' => now(),
                 ]);
 
                 // 2. Create payment items for each product
@@ -142,13 +155,17 @@ class PaypalController extends Controller
                 // 4. Return success response
                 return view('payment.success', [
                     'payment' => $payment,
-                    'items' => $payment->items // Assuming you have a relationship
+                    'items' => $payment->items
                 ]);
             }
 
             return redirect()->route('cancel')->with('error', 'Payment not completed');
         });
+    } catch (\Exception $e) {
+        \Log::error('PayPal payment error: ' . $e->getMessage());
+        return redirect()->route('cancel')->with('error', 'Error processing payment');
     }
+}
 
     /**
      * Handle cancelled PayPal payment
