@@ -8,6 +8,7 @@ use App\Models\Feature;
 use App\Models\Product;
 use App\Models\ProductType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -67,6 +68,8 @@ class ProductController extends Controller
         if ($request->has('features')) {
             $product->features()->sync($request->features);
         }
+
+        Mail::to(auth()->user()->email)->send(new \App\Mail\PostMail(['name' => $product->name, 'title' => 'New Product Created']));
 
         return redirect()->route('products.index')
             ->with('success', 'Product created successfully');
@@ -144,10 +147,6 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->price_max);
         }
 
-
-
-        // $products = $query->get();
-        // return response()->json($products);
         $products = $query->paginate(10); // Use normal paginate()
 
         return response()->json([
