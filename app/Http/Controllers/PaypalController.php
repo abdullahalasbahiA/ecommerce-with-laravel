@@ -127,12 +127,20 @@ public function success(Request $request)
                 // 1. Create the main payment record
                 $payment = Payment::create([
                     'payment_id' => $response['id'],
+                    // payer id in my website database
+                    // 'user_web_id' => auth()->id, // Assuming user is authenticated
+                    // payer name in my website database
+                    // 'user_name' => auth()->user()->name ?? 'Guest',
+                    // payer email in my website database
+                    // 'user_email' => auth()->user()->email ?? '',
+                    'payer_id' => $response['payer']['payer_id'],
+                    'payer_email' => $response['payer']['email_address'],
                     'product_name' => $firstProduct, // Provide a value for this required field
                     'quantity' => $totalQuantity, // Provide a value for this required field
                     'amount' => $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'],
                     'currency' => $response['purchase_units'][0]['payments']['captures'][0]['amount']['currency_code'],
-                    'payer_name' => $response['payer']['name']['given_name'] . ' ' . ($response['payer']['name']['surname'] ?? ''),
-                    'payer_email' => $response['payer']['email_address'],
+                    'payer_name_gateway' => $response['payer']['name']['given_name'] . ' ' . ($response['payer']['name']['surname'] ?? ''),
+                    'payer_email_gateway' => $response['payer']['email_address'],
                     'payment_status' => $response['status'],
                     'payment_method' => 'PayPal',
                     'paid_at' => now(),
