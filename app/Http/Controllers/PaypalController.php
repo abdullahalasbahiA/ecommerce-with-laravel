@@ -127,6 +127,7 @@ public function success(Request $request)
                 // 1. Create the main payment record
                 $payment = Payment::create([
                     'payment_id' => $response['id'],
+                    'user_id' => auth()->id(), // Assuming user is authenticated
                     'product_name' => $firstProduct, // Provide a value for this required field
                     'quantity' => $totalQuantity, // Provide a value for this required field
                     'amount' => $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'],

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaypalController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProductSearchController;
@@ -20,6 +21,13 @@ Route::post('/products', [ProductController::class, 'store'])->name('products.st
 Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
 Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+
+
+// routes/web.php
+Route::middleware(['auth'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{payment}', [OrderController::class, 'show'])->name('orders.show');
+});
 
 
 // Impletementing Cart functionalites
@@ -46,7 +54,7 @@ Route::get('/something', function(){
 // ====================[ PayPal ]====================
 // ==================================================
 // Route::post('/paypal', [PaypalController::class, 'paypal'])->name('paypal');
-Route::post('createpayment', [PaypalController::class, 'createPayment'])->name('createpayment');
+Route::post('createpayment', [PaypalController::class, 'createPayment'])->name('createpayment')->middleware('auth');
 Route::get('success', [PaypalController::class, 'success'])->name('success');
 Route::get('/cancel', [PaypalController::class, 'cancel'])->name('cancel');
 

@@ -40,4 +40,15 @@ class Payment extends Model
     {
         return $this->hasMany(PaymentItem::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    // Helper method to get formatted order number
+    public function getOrderNumberAttribute()
+    {
+        return 'ORD-' . str_pad($this->id, 6, '0', STR_PAD_LEFT);
+    }
 }

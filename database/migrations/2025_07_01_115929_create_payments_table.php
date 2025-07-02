@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id();
+            $table->id()->autoIncrement();
             $table->string('payment_id')->unique();
+            $table->foreignId('user_id')->nullable()->constrained('users'); // Better foreign key
             $table->string('product_name')->nullable(); // Now properly nullable
             $table->integer('quantity')->default(1); // Changed to integer
             $table->decimal('amount', 10, 2); // Correct decimal type for monetary values
@@ -26,7 +27,6 @@ return new class extends Migration
             $table->string('transaction_id')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->string('order_id')->nullable();
-            $table->foreignId('user_id')->nullable()->constrained('users'); // Better foreign key
             $table->string('status', 20)->default('active');
             $table->string('ip_address', 45)->nullable(); // IPv6 can be 45 chars
             $table->text('user_agent')->nullable(); // Changed to text as can be long
