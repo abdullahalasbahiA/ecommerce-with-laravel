@@ -6,4 +6,4 @@ view dashboard [ecommerce statistics]
 
 add the address before purchase
 
-Stripe
+Stripe.
