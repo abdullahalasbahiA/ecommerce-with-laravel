@@ -8,26 +8,27 @@ use Illuminate\Http\Request;
 class OrderController extends Controller
 {
     public function index()
-    {
-        // if (auth()->user()->is_admin) {
-            $payments = Payment::with(['user', 'items'])
-                ->latest()
-                ->paginate(10);
-        // } else {
-        //     $payments = auth()->user()->payments()
-        //         ->with('items')
-        //         ->latest()
-        //         ->paginate(10);
-        // }
+{
+    $query = Payment::query()->with('items');
 
-        return view('orders.index', compact('payments'));
+    if (auth()->id() == 3) {
+        // Admin sees all payments with user relationships
+        $query->with('user')->latest();
+    } else {
+        // Regular users see only their payments
+        $query->where('user_id', auth()->id())->latest();
     }
+
+    $payments = $query->paginate(10);
+
+    return view('orders.index', compact('payments'));
+}
 
 
     public function show(Payment $payment)
     {
         // Verify the payment belongs to the authenticated user
-        if ($payment->user_id !== auth()->id()) {
+        if ($payment->user_id !== auth()->id() && auth()->id() != 3) {
             abort(403, 'Unauthorized action.');
         }
 

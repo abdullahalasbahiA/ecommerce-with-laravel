@@ -92,7 +92,8 @@
                                 class="py-4 px-2 text-blue-500 border-b-4 border-blue-500 font-semibold ">Home</a>
                             <a href="/products/create"
                                 class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Add
-                                Product</a>
+                                Product</a><a href="/orders"
+                                class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">orders</a>
                             <a href="#"
                                 class="py-4 px-2 text-gray-500 font-semibold hover:text-blue-500 transition duration-300">Categories</a>
                             <a href="#"
