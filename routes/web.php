@@ -29,6 +29,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/orders/{payment}', [OrderController::class, 'show'])->name('orders.show');
 });
 
+Route::put('/admin/payments/{payment}/status', [OrderController::class, 'updateStatus'])
+    ->name('payments.updateStatus');
+
+
 
 // Impletementing Cart functionalites
 // Route::get('/', [ProductController::class, 'index'])->name('products.index');

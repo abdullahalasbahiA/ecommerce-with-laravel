@@ -1,6 +1,6 @@
-# -----------Paypal----
-# -----------save payment to database-----------
-Show the use what he had purchased
+# ----------- Paypal ----
+# ----------- save payment to database -----------
+# ----------- Show the use what he had purchased -----------
 view dashboard [ecommerce statistics]
 -------------------------------------------
 
