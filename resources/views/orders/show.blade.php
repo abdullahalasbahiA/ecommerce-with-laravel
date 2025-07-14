@@ -1,16 +1,14 @@
 <x-my-layout>
     <div class="max-w-6xl mx-auto px-4 py-10 space-y-6">
         <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
-            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 p-6 border-b border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white">
+            <div
+                class="flex flex-col sm:flex-row justify-between items-center gap-4 p-6 border-b border-gray-200 bg-gradient-to-r from-white via-gray-50 to-white">
                 <h2 class="text-xl font-bold text-gray-800">
                     Order #{{ $payment->order_number }}
                 </h2>
-                <span class="text-sm font-semibold px-4 py-1 rounded-full
-                    @if($payment->payment_status == 'COMPLETED') bg-green-100 text-green-800
-                    @elseif($payment->payment_status == 'PENDING') bg-yellow-100 text-yellow-800
-                    @else bg-red-100 text-red-800
-                    @endif">
-                    {{ ucfirst(strtolower($payment->payment_status)) }}
+                <span
+                    class="inline-block font-semibold px-4 py-1 rounded-full {{ $payment->status->colorClass() }}">
+                    {{ ucfirst($payment->status->value) }}
                 </span>
             </div>
 
@@ -19,18 +17,24 @@
                     <div>
                         <h3 class="text-lg font-semibold text-slate-700 mb-4">Order Details</h3>
                         <ul class="space-y-2 text-sm text-slate-600">
-                            <li><span class="font-medium w-28 inline-block">Date:</span> {{ $payment->created_at->format('M d, Y h:i A') }}</li>
-                            <li><span class="font-medium w-28 inline-block">Total:</span> {{ $payment->currency }} {{ number_format($payment->amount, 2) }}</li>
-                            <li><span class="font-medium w-28 inline-block">Method:</span> {{ ucfirst($payment->payment_method) }}</li>
+                            <li><span class="font-medium w-28 inline-block">Date:</span>
+                                {{ $payment->created_at->format('M d, Y h:i A') }}</li>
+                            <li><span class="font-medium w-28 inline-block">Total:</span> {{ $payment->currency }}
+                                {{ number_format($payment->amount, 2) }}</li>
+                            <li><span class="font-medium w-28 inline-block">Method:</span>
+                                {{ ucfirst($payment->payment_method) }}</li>
                         </ul>
                     </div>
                     <div>
                         <h3 class="text-lg font-semibold text-slate-700 mb-4">Customer Details</h3>
                         <ul class="space-y-2 text-sm text-slate-600">
-                            <li><span class="font-medium w-28 inline-block">Name:</span> {{ $payment->user->name ?? 'N/A' }}</li>
-                            <li><span class="font-medium w-28 inline-block">Email:</span> {{ $payment->payer_email }}</li>
-                            @if($payment->shipping_address)
-                            <li><span class="font-medium w-28 inline-block">Shipping:</span> {{ $payment->shipping_address }}</li>
+                            <li><span class="font-medium w-28 inline-block">Name:</span>
+                                {{ $payment->user->name ?? 'N/A' }}</li>
+                            <li><span class="font-medium w-28 inline-block">Email:</span> {{ $payment->payer_email }}
+                            </li>
+                            @if ($payment->shipping_address)
+                                <li><span class="font-medium w-28 inline-block">Shipping:</span>
+                                    {{ $payment->shipping_address }}</li>
                             @endif
                         </ul>
                     </div>
@@ -49,17 +53,20 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($payment->items as $item)
-                                <tr class="border-t border-gray-200">
-                                    <td class="px-4 py-2">{{ $item->product_name }}</td>
-                                    <td class="px-4 py-2">{{ $payment->currency }} {{ number_format($item->price, 2) }}</td>
-                                    <td class="px-4 py-2">{{ $item->quantity }}</td>
-                                    <td class="px-4 py-2">{{ $payment->currency }} {{ number_format($item->total, 2) }}</td>
-                                </tr>
+                                @foreach ($payment->items as $item)
+                                    <tr class="border-t border-gray-200">
+                                        <td class="px-4 py-2">{{ $item->product_name }}</td>
+                                        <td class="px-4 py-2">{{ $payment->currency }}
+                                            {{ number_format($item->price, 2) }}</td>
+                                        <td class="px-4 py-2">{{ $item->quantity }}</td>
+                                        <td class="px-4 py-2">{{ $payment->currency }}
+                                            {{ number_format($item->total, 2) }}</td>
+                                    </tr>
                                 @endforeach
                                 <tr class="bg-slate-50 font-semibold border-t border-gray-300">
                                     <td colspan="3" class="text-right px-4 py-3">Grand Total:</td>
-                                    <td class="px-4 py-3">{{ $payment->currency }} {{ number_format($payment->amount, 2) }}</td>
+                                    <td class="px-4 py-3">{{ $payment->currency }}
+                                        {{ number_format($payment->amount, 2) }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -70,7 +77,7 @@
 
         <div>
             <a href="{{ route('orders.index') }}"
-               class="inline-flex items-center gap-2 px-5 py-2 bg-gray-800 text-white text-sm font-semibold rounded-lg hover:bg-gray-700 transition">
+                class="inline-flex items-center gap-2 px-5 py-2 bg-gray-800 text-white text-sm font-semibold rounded-lg hover:bg-gray-700 transition">
                 ← Back to Orders
             </a>
         </div>

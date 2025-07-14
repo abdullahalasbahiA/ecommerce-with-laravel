@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('transaction_id')->nullable();
             $table->timestamp('paid_at')->nullable();
             $table->string('order_id')->nullable();
-            $table->string('status', 20)->default('active');
+            $table->string('status', 20)->default('pending');
             $table->string('ip_address', 45)->nullable(); // IPv6 can be 45 chars
             $table->text('user_agent')->nullable(); // Changed to text as can be long
             $table->text('notes')->nullable(); // Changed to text

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaypalController;
@@ -32,6 +33,10 @@ Route::middleware(['auth'])->group(function () {
 Route::put('/admin/payments/{payment}/status', [OrderController::class, 'updateStatus'])
     ->name('payments.updateStatus');
 
+Route::middleware(['auth', 'isAdminUser'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+});
+
 
 
 // Impletementing Cart functionalites
@@ -43,7 +48,7 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::put('/store-cart/{productId}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/store-cart/{productId}', [CartController::class, 'destroy'])->name('cart.destroy');
 
-Route::get('/something', function(){
+Route::get('/something', function () {
     $products = Product::all();
     return view('products.something', compact('products'));
 });
@@ -76,4 +81,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
